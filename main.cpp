@@ -4,6 +4,7 @@
 //Main File
 
 #include <iostream>
+#include "vec3.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
@@ -19,9 +20,6 @@ int main(){
     
     unsigned char data[nx * ny * 3];
     int index = 0;
-    
-    // write header for PPM images
-    std::cout << "P3\n" << nx << " " << ny << "\n255\n"; 
     
     // for loop for outputting image information to file
     for (int j = ny-1; j>= 0; j--){
@@ -39,5 +37,6 @@ int main(){
             data[index++] = ib;
         }
     }
+    // write data to jpg image using stb library
     stbi_write_jpg("foo_out.jpg",nx, ny,3,data,100);
 }
