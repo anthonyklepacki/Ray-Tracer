@@ -5,11 +5,18 @@
 
 #include <iostream>
 #include "vec3.h"
+#include "ray.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image/stb_image_write.h"
+
+vec3 color(const ray& r){
+    vec3 unit_direction = unit_vector(r.direction());
+    float t = 0.5*(unit_direction.y() + 1.0);
+    return (1.0-t)*vec3(1.0,1.0,1.0) + t*vec3(0.5,0.7,1.0);
+}
 
 int main(){
     int x, y, n;
@@ -21,16 +28,24 @@ int main(){
     unsigned char data[nx * ny * 3];
     int index = 0;
     
+    vec3 lower_left_corner(-2.0,-1.0,-1.0);
+    vec3 horizontal(4.0,0.0,0.0);
+    vec3 vertical(0.0,2.0,0.0);
+    vec3 origin(0.0,0.0,0.0);
+    
     // for loop for outputting image information to file
     for (int j = ny-1; j>= 0; j--){
         for (int i = 0; i < nx; i++) {
-            float r = float(i)/float(nx);
-            float g = float(j)/float(ny);
-            float b = 0.2;
             
-            int ir = int(255.99*r);
-            int ig = int(255.99*g);
-            int ib = int(255.99*b);
+            float u = float(i)/float(nx);
+            float v = float(j)/float(ny);
+
+            ray r(origin, lower_left_corner + (u*horizontal) + (v*vertical));
+            vec3 colorAtRay = color(r);
+            
+            int ir = int(255.99*colorAtRay[0]);
+            int ig = int(255.99*colorAtRay[1]);
+            int ib = int(255.99*colorAtRay[2]);
             
             data[index++] = ir;
             data[index++] = ig;
