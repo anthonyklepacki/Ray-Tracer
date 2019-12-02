@@ -8,6 +8,7 @@
 #include "hitable_list.h"
 #include <float.h>
 #include "vec3.h"
+#include "camera.h"
 #include "ray.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -34,37 +35,39 @@ int main(){
     int x, y, n;
 
     //Pixel initializations
-    int nx = 800;
-    int ny = 600;
+    int nx = 200;
+    int ny = 100;
+    int ns = 100;
     
     unsigned char data[nx * ny * 3];
     int index = 0;
     
-    vec3 lower_left_corner(-2.0,-1.0,-1.0);
-    vec3 horizontal(4.0,0.0,0.0);
-    vec3 vertical(0.0,2.0,0.0);
-    vec3 origin(0.0,0.0,0.0);
+
     
     hitable *list[2];
     list[0] = new sphere(vec3(0,0,-1), 0.5);
     list[1] = new sphere(vec3(0, -100.5, -1), 100);
     hitable *world = new hitable_list(list, 2);
     
+    camera cam;
+    
     // for loop for outputting image information to file
     for (int j = ny-1; j>= 0; j--){
         for (int i = 0; i < nx; i++) {
+            vec3 col(0, 0, 0);
             
-            float u = float(i)/float(nx);
-            float v = float(j)/float(ny);
-
-            ray r(origin, lower_left_corner + (u*horizontal) + (v*vertical));
+                for (int s = 0; s < ns; s++) {
+                    float u = float(i+drand48()) / float(nx);
+                    float v = float(j+drand48()) / float(ny);
+                    ray r = cam.get_ray(u, v);
+                    col += color(r,world);
+                    //std::cout << col << std::endl;
+                }
+                col /= float(ns);
             
-            vec3 p = r.point_at_parameter(2.0);
-            vec3 colorAtRay = color(r, world);
-            
-            int ir = int(255.99*colorAtRay[0]);
-            int ig = int(255.99*colorAtRay[1]);
-            int ib = int(255.99*colorAtRay[2]);
+            int ir = int(255.99*col[0]);
+            int ig = int(255.99*col[1]);
+            int ib = int(255.99*col[2]);
             
             data[index++] = ir;
             data[index++] = ig;
