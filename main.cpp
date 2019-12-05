@@ -10,6 +10,7 @@
 #include "vec3.h"
 #include "camera.h"
 #include "ray.h"
+#include "random.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
@@ -17,10 +18,19 @@
 #include "stb_image/stb_image_write.h"
 
 
+vec3 random_in_unit_sphere(){
+    vec3 p(2,2,2);
+    while (p.squared_length() >= 1.0){
+        p = 2.0*vec3(random_double(),random_double(),random_double()) - vec3(1,1,1);
+    }
+    return p;
+}
+
 vec3 color(const ray& r, hitable *world){
     hit_record rec;
-    if (world->hit(r, 0.0, 1000000 , rec)){
-        return 0.5*vec3(rec.normal.x()+1, rec.normal.y()+1, rec.normal.z()+1);
+    if (world->hit(r, 0.001, FLT_MAX  , rec)){
+        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+        return 0.5*color(ray(rec.p, target - rec.p),world);
         
     }else{
         //std::cout << "background" << std::endl;
@@ -28,8 +38,9 @@ vec3 color(const ray& r, hitable *world){
         float t = 0.5*(unit_direction.y() + 1.0);
         return (1.0-t)*vec3(1.0,1.0,1.0) + t*vec3(0.5,0.7,1.0);
     }
-    
 }
+
+
 
 int main(){
     int x, y, n;
@@ -64,6 +75,8 @@ int main(){
                     //std::cout << col << std::endl;
                 }
                 col /= float(ns);
+                //Perform gamma correction
+                col = vec3(sqrt(col[0]),sqrt(col[1]),sqrt(col[2]));
             
             int ir = int(255.99*col[0]);
             int ig = int(255.99*col[1]);
