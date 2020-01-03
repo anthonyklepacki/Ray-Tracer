@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "sphere.h"
+#include "triangle.h"
 #include "hitable_list.h"
 #include <float.h>
 #include "vec3.h"
@@ -50,18 +51,23 @@ int main(){
     int nx = scaler*200;
     int ny = scaler*100;
     int ns = 100;
+    int pixels = nx*ny;
+    
     
     unsigned char data[nx * ny * 3];
     int index = 0;
     
+    int counter = 0;
+    int counterDashes = 50;
 
     
-    hitable *list[4];
+    hitable *list[5];
     list[0] = new sphere(vec3(0,0,-1), 0.5, new lambertian(vec3(0.8, 0.3, 0.3)));
     list[1] = new sphere(vec3(0,-100.5,-1), 100, new lambertian(vec3(0.8, 0.8, 0.0)));
     list[2] = new sphere(vec3(1,0,-1), 0.5, new metal(vec3(0.8, 0.6, 0.2),0.5));
     list[3] = new sphere(vec3(-1,0,-1), 0.5, new metal(vec3(0.8, 0.8, 0.8),0.0));
-    hitable *world = new hitable_list(list,4);
+    list[4] = new triangle(vec3(1,-0.5,-1),vec3(-1,-0.5,-1),vec3(0,-0.5,-0.5), new metal(vec3(0.5, 0.8, 0.25),0.0));
+    hitable *world = new hitable_list(list,5);
     
     camera cam;
     
@@ -88,10 +94,22 @@ int main(){
             data[index++] = ir;
             data[index++] = ig;
             data[index++] = ib;
-            
-            
+            counter++;
         }
         
+
+        std::cout << "Progress:[";
+        double progress = (double)counter/pixels;
+        for (int d = 0; d < counterDashes; d++){
+            
+            if (progress <= (double)d/counterDashes){
+                std::cout << "*";
+            }else{
+                std::cout << "-";
+            }
+            //std::cout << progress << std::endl;
+        }
+        std::cout << "]  " << progress*100 << "%"<< std::endl;
     }
     // write data to jpg image using stb library
     stbi_write_jpg("foo_out.jpg",nx, ny,3,data,100);
