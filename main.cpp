@@ -47,7 +47,7 @@ int main(){
     int x, y, n;
 
     //Pixel initializations
-    int scaler = 1;
+    int scaler = 2;
     int nx = scaler*200;
     int ny = scaler*100;
     int ns = 100;
@@ -98,18 +98,21 @@ int main(){
         }
         
 
-        std::cout << "Progress:[";
+        //std::cout << "Progress:[";
+        printf("Progress:[");
         double progress = (double)counter/pixels;
         for (int d = 0; d < counterDashes; d++){
             
             if (progress <= (double)d/counterDashes){
-                std::cout << "*";
+                //std::cout << "*";
+                printf("#");
             }else{
-                std::cout << "-";
+                printf("-");
             }
             //std::cout << progress << std::endl;
         }
-        std::cout << "]  " << progress*100 << "%"<< std::endl;
+        printf("] %d percent done. \n", progress*100);
+        //std::cout << "]  " << progress*100 << "%"<< std::endl;
     }
     // write data to jpg image using stb library
     stbi_write_jpg("foo_out.jpg",nx, ny,3,data,100);
