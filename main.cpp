@@ -47,7 +47,7 @@ int main(){
     int x, y, n;
 
     //Pixel initializations
-    int scaler = 2;
+    int scaler = 1;
     int nx = scaler*200;
     int ny = scaler*100;
     int ns = 100;
@@ -69,7 +69,10 @@ int main(){
     list[4] = new triangle(vec3(1,-0.5,-1),vec3(-1,-0.5,-1),vec3(0,-0.5,-0.5), new metal(vec3(0.5, 0.8, 0.25),0.0));
     hitable *world = new hitable_list(list,5);
     
-    camera cam(vec3(-2,2,1), vec3(0,0,-1), vec3(0,1,0), 90, float(nx)/float(ny));
+    vec3 lookfrom(3,3,2);
+    vec3 lookat(0,0,-1);
+    float dist_to_focus = (lookfrom-lookat).length();
+    camera cam(lookfrom, lookat, vec3(0,1,0), 20, float(nx)/float(ny), 0.0, dist_to_focus);
     
     // for loop for outputting image information to file
     for (int j = ny-1; j>= 0; j--){
@@ -111,7 +114,7 @@ int main(){
             }
             //std::cout << progress << std::endl;
         }
-        printf("] %d percent done. \n", progress*100);
+        printf("] \n");
         //std::cout << "]  " << progress*100 << "%"<< std::endl;
     }
     // write data to jpg image using stb library
