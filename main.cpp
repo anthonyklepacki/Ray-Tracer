@@ -14,6 +14,8 @@
 #include "ray.h"
 #include "random.h"
 #include "material.h"
+#include "aabb.h"
+#include "bvh.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
