@@ -47,4 +47,8 @@ class noise_texture : public texture {
         float scale;
 };
 
+
+
+
+
 #endif

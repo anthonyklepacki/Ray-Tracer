@@ -17,6 +17,7 @@
 #include "aabb.h"
 #include "bvh.h"
 #include "perlin.h"
+#include "surface_texture.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -33,7 +34,7 @@ vec3 color(const ray& r, hitable *world, int depth){
         ray scattered;
         vec3 attenuation;
         if (depth < 5 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
-            return attenuation*color(scattered, world, depth+1);
+            return attenuation;
         }
         else {
             return vec3(0,0,0);
@@ -48,11 +49,19 @@ vec3 color(const ray& r, hitable *world, int depth){
 
 
     hitable *two_perlin_spheres() {
-        texture *pertext = new noise_texture();
+        texture *pertext = new noise_texture(4);
         hitable **list = new hitable*[2];
         list[0] = new sphere(vec3(0,-1000, 0), 1000, new lambertian(pertext));
         list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
         return new hitable_list(list, 2);
+    }
+    
+    hitable *earth() {
+        int nx1, ny1, nn1;
+        //unsigned char *tex_data = stbi_load("tiled.jpg", &nx, &ny, &nn, 0);
+        unsigned char *tex_data = stbi_load("earthmap.jpg", &nx1, &ny1, &nn1, 0);
+        material *mat =  new lambertian(new image_texture(tex_data, nx1, ny1));
+        return new sphere(vec3(0,0, 0), 2, mat);
     }
 
 
@@ -83,14 +92,9 @@ int main(){
     hitable *world = new hitable_list(list,5);
     */
     
-    //hitable *world = two_perlin_spheres();
+    hitable *world = earth();
     
-    
-    texture *pertext = new noise_texture(4);
-    hitable *list[2];
-    list[0] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
-    list[1] = new sphere(vec3(0,-1000, 0), 1000, new lambertian(pertext));
-    hitable *world = new hitable_list(list,2);
+
     
     vec3 lookfrom(13,2,3);
     vec3 lookat(0,0,0);
