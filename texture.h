@@ -1,17 +1,19 @@
 #ifndef TEXTUREH
 #define TEXTUREH
 
+
 #include "perlin.h"
 
-class texture {
+
+class texture  {
     public:
         virtual vec3 value(float u, float v, const vec3& p) const = 0;
 };
 
 class constant_texture : public texture {
     public:
-        constant_texture() {}
-        constant_texture(vec3 c) : color(c) {}
+        constant_texture() { }
+        constant_texture(vec3 c) : color(c) { }
         virtual vec3 value(float u, float v, const vec3& p) const {
             return color;
         }
@@ -41,14 +43,10 @@ class noise_texture : public texture {
         virtual vec3 value(float u, float v, const vec3& p) const {
 //            return vec3(1,1,1)*0.5*(1 + noise.turb(scale * p));
 //            return vec3(1,1,1)*noise.turb(scale * p);
-              return 0.5*(1 + sin(scale*p.x() + 5*noise.turb(scale*p)))*vec3(1,1,1) ;
+              return vec3(1,1,1)*0.5*(1 + sin(scale*p.x() + 5*noise.turb(scale*p))) ;
         }
         perlin noise;
         float scale;
 };
-
-
-
-
 
 #endif

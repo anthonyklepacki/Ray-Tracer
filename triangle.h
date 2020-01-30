@@ -1,9 +1,9 @@
 #ifndef TRIANGLEH
 #define TRIANGLEH
 
-#include "hitable.h"
+#include "hittable.h"
 
-class triangle: public hitable {
+class triangle: public hittable {
     public:
         triangle() {}
         //sphere(vec3 cen, float r, material *m): center(cen), radius(r), mat_ptr(m) {};

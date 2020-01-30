@@ -1,6 +1,7 @@
 #ifndef CAMERAH
 #define CAMERAH
 
+
 #include "random.h"
 #include "ray.h"
 
@@ -48,5 +49,4 @@ class camera {
         float time0, time1;  // new variables for shutter open/close times
         float lens_radius;
 };
-
 #endif

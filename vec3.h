@@ -1,8 +1,7 @@
 #ifndef VEC3H
 #define VEC3H
 
-//Anthony Klepacki
-//Vector 3 class
+
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
