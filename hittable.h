@@ -15,6 +15,10 @@
 
 #include <float.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846f
+#endif
+
 
 class material;
 
@@ -26,20 +30,23 @@ void get_sphere_uv(const vec3& p, float& u, float& v) {
 }
 
 
-struct hit_record {
-    float t;  
+struct hit_record
+{
+    float t;
     float u;
     float v;
     vec3 p;
-    vec3 normal; 
+    vec3 normal;
     material *mat_ptr;
 };
 
-class hittable {
+class hittable  {
     public:
         virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const = 0;
         virtual bool bounding_box(float t0, float t1, aabb& box) const = 0;
-        int rays;
+        virtual float  pdf_value(const vec3& o, const vec3& v) const  {return 0.0;}
+        virtual vec3 random(const vec3& o) const {return vec3(1, 0, 0);}
+		int rays;
 };
 
 class flip_normals : public hittable {
@@ -65,7 +72,7 @@ class translate : public hittable {
         virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const;
         virtual bool bounding_box(float t0, float t1, aabb& box) const;
         hittable *ptr;
-        vec3 offset; 
+        vec3 offset;
 };
 
 bool translate::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
@@ -127,7 +134,7 @@ rotate_y::rotate_y(hittable *p, float angle) : ptr(p) {
         }
     }
     bbox = aabb(min, max);
-}   
+}
 
 bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
     vec3 origin = r.origin();
@@ -148,8 +155,9 @@ bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
         rec.normal = normal;
         return true;
     }
-    else 
+    else
         return false;
 }
 
 #endif
+

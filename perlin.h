@@ -1,9 +1,19 @@
 #ifndef PERLINH
 #define PERLINH
+//==================================================================================================
+// Written in 2016 by Peter Shirley <ptrshrl@gmail.com>
+//
+// To the extent possible under law, the author(s) have dedicated all copyright and related and
+// neighboring rights to this software to the public domain worldwide. This software is distributed
+// without any warranty.
+//
+// You should have received a copy (see file COPYING.txt) of the CC0 Public Domain Dedication along
+// with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+//==================================================================================================
 
-
-#include "vec3.h"
 #include "random.h"
+#include "vec3.h"
+
 
 inline float perlin_interp(vec3 c[2][2][2], float u, float v, float w) {
     float uu = u*u*(3-2*u);
@@ -55,13 +65,9 @@ class perlin {
 };
 
 static vec3* perlin_generate() {
-    vec3 *p = new vec3[256];
-    for (int i = 0; i < 256; ++i) {
-        double x_random = 2*random_double() - 1;
-        double y_random = 2*random_double() - 1;
-        double z_random = 2*random_double() - 1;
-        p[i] = unit_vector(vec3(x_random, y_random, z_random));
-    }
+    vec3 * p = new vec3[256];
+    for ( int i = 0; i < 256; ++i )
+        p[i] = unit_vector(vec3(-1 + 2*random_double(), -1 + 2*random_double(), -1 + 2*random_double()));
     return p;
 }
 
@@ -90,3 +96,4 @@ int *perlin::perm_z = perlin_generate_perm();
 
 
 #endif
+
